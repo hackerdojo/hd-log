@@ -1,10 +1,15 @@
 import logging
+import urllib
 
 from google.appengine.ext import webapp, db
 from google.appengine.api import urlfetch, memcache, users
 from google.appengine.ext.webapp import util, template
 from google.appengine.api.labs import taskqueue
 from django.utils import simplejson
+
+#CONSTANTS#
+UPDATES_LIMIT = 10
+
 
 # Parsing the username ourselfs because the nickname on GAE does funky stuff with non @gmail account
 def username(user):
@@ -60,8 +65,20 @@ class Comment(db.Model):
     def user_fullname(self):
       return fullname(username(self.user))
 
+#Json representations
+def updates_dict(update):
+  return {
+    'user':update.user_fullname(),
+    'body':update.body,
+    'created':str(update.created)}
 
 # Handlers:
+class UpdatesHandler(webapp.RequestHandler):
+    def get(self,cursor):
+        updates_query = Update.all().order('-created')
+        foo = updates_query.with_cursor(urllib.unquote(cursor)).fetch(UPDATES_LIMIT)
+        self.response.out.write(simplejson.dumps({'messages':map((lambda bar: updates_dict(bar)), foo)}, {'cursor':updates_query.cursor()}))
+
 class CommentHandler(webapp.RequestHandler):
     def post(self, update_id):
         update = Update.get_by_id(int(update_id))
@@ -79,7 +96,8 @@ class MainHandler(webapp.RequestHandler):
             logout_url = users.create_logout_url('/')
         else:
             login_url = users.create_login_url('/')
-        updates = Update.all().order('-created')
+        updates_query = Update.all().order('-created')
+        updates = updates_query.fetch(UPDATES_LIMIT)
         self.response.out.write(template.render('templates/main.html', locals()))
     
     def post(self):
@@ -90,6 +108,7 @@ class MainHandler(webapp.RequestHandler):
 def main():
     application = webapp.WSGIApplication([
         ('/', MainHandler),
+        ('/updates/(.+)', UpdatesHandler),
         ('/comment/(.+)', CommentHandler),
         ('/worker/user', UserWorker),
       ], debug=True)

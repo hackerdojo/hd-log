@@ -20,6 +20,10 @@
     </p>
   {% endfor %}
 {% endfor %}
+<div>
+  <a href="javascript:loadMoreUpdates('{{updates_query.cursor}}')">Load more...</a>
+</div>
+
 
 <script type="text/javascript">
   function toggleComment(id) {
@@ -30,6 +34,12 @@
       $('#comment-form-'+id).css('display', 'inline');
       $('#comment-link-'+id).css('display', 'none');
     }
+  }
+
+  function loadMoreUpdates(cursor){
+    $.get('/updates/' + cursor, function(data) {
+      console.log(data)
+    });
   }
 </script>
 {% endblock %}
