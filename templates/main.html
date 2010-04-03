@@ -20,7 +20,7 @@
     </p>
   {% endfor %}
 {% endfor %}
-<div>
+<div id="load-more">
   <a href="javascript:loadMoreUpdates('{{updates_query.cursor}}')">Load more...</a>
 </div>
 
@@ -38,8 +38,23 @@
 
   function loadMoreUpdates(cursor){
     $.get('/updates/' + cursor, function(data) {
-      console.log(data)
+      var foo = eval("(" + data + ")" );
+      console.log(foo);
+      for(var i=0; i<foo[0].messages.length;i++){
+        $("#content")[0].innerHTML += renderUpdate(foo[0].messages[i])
+      }
+      $("#load-more").remove();
+      $("#content")[0].innerHTML += renderLoadMore(foo[1].cursor);
     });
+  }
+
+  function renderLoadMore(cursor){
+    return "<div id='load-more'><a href='javascript:loadMoreUpdates(\"" + cursor + "\")'>Load more...</a></div>";
+
+  }
+
+  function renderUpdate(message){
+    return "<div>" + message.body  + "</div>";
   }
 </script>
 {% endblock %}

@@ -77,7 +77,7 @@ class UpdatesHandler(webapp.RequestHandler):
     def get(self,cursor):
         updates_query = Update.all().order('-created')
         foo = updates_query.with_cursor(urllib.unquote(cursor)).fetch(UPDATES_LIMIT)
-        self.response.out.write(simplejson.dumps({'messages':map((lambda bar: updates_dict(bar)), foo)}, {'cursor':updates_query.cursor()}))
+        self.response.out.write(simplejson.dumps([{'messages':map((lambda bar: updates_dict(bar)), foo)}, {'cursor':updates_query.cursor()}]))
 
 class CommentHandler(webapp.RequestHandler):
     def post(self, update_id):
