@@ -68,7 +68,7 @@ class Comment(db.Model):
 #Json representations
 def updates_dict(update):
   return {
-    'user':update.user_fullname(),
+    'user_fullname':update.user_fullname(),
     'body':update.body,
     'created':str(update.created)}
 
