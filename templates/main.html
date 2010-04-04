@@ -39,7 +39,6 @@
   function loadMoreUpdates(cursor){
     $.get('/updates/' + cursor, function(data) {
       var foo = eval("(" + data + ")" );
-      console.log(foo);
       for(var i=0; i<foo[0].messages.length;i++){
         $("#content")[0].innerHTML += renderUpdate(foo[0].messages[i])
       }
@@ -61,7 +60,15 @@
     u +=     "<a href='javascript:void()' onclick='toggleComment("+u.id+")'>Cancel</a>";
     u +=   "</form>";
     u += "</p>";
+    for(var i=0; i<update.comments.length; i++){u += renderComment(update.comments[i]);}
     return u;
+  }
+
+  function renderComment(comment){
+    c  = '<p style="margin-left: 20px;">';
+    c +=   comment.body + " | " +  comment.ago + " | " + comment.user_fullname;
+    c += '</p>';
+    return c;
   }
 </script>
 {% endblock %}

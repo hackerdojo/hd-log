@@ -66,18 +66,25 @@ class Comment(db.Model):
       return fullname(username(self.user))
 
 #Json representations
+def comment_dict(comment):
+  return {
+    'user': comment.user_fullname(),
+    'body': comment.body,
+    'created': str(comment.created)}
+
 def updates_dict(update):
   return {
     'user_fullname':update.user_fullname(),
     'body':update.body,
-    'created':str(update.created)}
+    'created':str(update.created),
+    'comments':map(lambda c: comment_dict(c), update.comment_set) }
 
 # Handlers:
 class UpdatesHandler(webapp.RequestHandler):
     def get(self,cursor):
         updates_query = Update.all().order('-created')
-        foo = updates_query.with_cursor(urllib.unquote(cursor)).fetch(UPDATES_LIMIT)
-        self.response.out.write(simplejson.dumps([{'messages':map((lambda bar: updates_dict(bar)), foo)}, {'cursor':updates_query.cursor()}]))
+        updates_with_cursor = updates_query.with_cursor(urllib.unquote(cursor)).fetch(UPDATES_LIMIT)
+        self.response.out.write(simplejson.dumps([{'messages':map((lambda u: updates_dict(u)), updates_with_cursor)}, {'cursor':updates_query.cursor()}]))
 
 class CommentHandler(webapp.RequestHandler):
     def post(self, update_id):
