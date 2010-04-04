@@ -68,12 +68,14 @@ class Comment(db.Model):
 #Json representations
 def comment_dict(comment):
   return {
-    'user': comment.user_fullname(),
+    'id': str(comment.key().id()),
+    'user_fullname': comment.user_fullname(),
     'body': comment.body,
     'created': str(comment.created)}
 
 def updates_dict(update):
   return {
+    'id':str(update.key().id()),
     'user_fullname':update.user_fullname(),
     'body':update.body,
     'created':str(update.created),

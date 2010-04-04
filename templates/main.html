@@ -54,7 +54,7 @@
 
   function renderUpdate(update){
     u  = "<p>" + update.body + " | " + update.ago + " | " + update.user_fullname + " |";
-    u +=   "<a href='javascript:void() onclick='toggleComment(" + update.id + ")' id='comment-link-" + update.id + "'>Comment</a>";
+    u +=   "<a href='javascript:void()' onclick='toggleComment(" + update.id + ")' id='comment-link-" + update.id + "'>Comment</a>";
     u +=   "<form action='/comment/"+update.id+"' method='post' id='comment-form-"+update.id+"' style='display:none;'>";
     u +=     "<input type='text' name='body'/><input type='submit' value='Comment' />";      
     u +=     "<a href='javascript:void()' onclick='toggleComment("+u.id+")'>Cancel</a>";
