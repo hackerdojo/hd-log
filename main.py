@@ -6,6 +6,7 @@ from google.appengine.api import urlfetch, memcache, users
 from google.appengine.ext.webapp import util, template
 from google.appengine.api.labs import taskqueue
 from django.utils import simplejson
+from django.template.defaultfilters import timesince 
 
 #CONSTANTS#
 UPDATES_LIMIT = 10
@@ -71,14 +72,14 @@ def comment_dict(comment):
     'id': str(comment.key().id()),
     'user_fullname': comment.user_fullname(),
     'body': comment.body,
-    'created': str(comment.created)}
+    'ago': timesince(comment.created)}
 
 def updates_dict(update):
   return {
     'id':str(update.key().id()),
     'user_fullname':update.user_fullname(),
     'body':update.body,
-    'created':str(update.created),
+    'ago':timesince(update.created),
     'comments':map(lambda c: comment_dict(c), update.comment_set) }
 
 # Handlers:
