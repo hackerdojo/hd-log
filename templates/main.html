@@ -5,23 +5,24 @@
   <textarea name="body"></textarea><br />
   <input type="submit" value="Update" />
 </form>
-
-{% for update in updates %}
-  <p>{{update.body}} | {{update.created|timesince}} ago | {{update.user_fullname}} | 
-    <a href="javascript:void()" onclick="toggleComment({{update.key.id}})" id="comment-link-{{update.key.id}}">Comment</a>
-    <form action="/comment/{{update.key.id}}" method="post" id="comment-form-{{update.key.id}}" style="display: none;">
-      <input type="text" name="body" /> <input type="submit" value="Comment" />
-      <a href="javascript:void()" onclick="toggleComment({{update.key.id}})">Cancel</a>
-    </form>
-  </p>
-  {% for comment in update.comment_set %}
-    <p style="margin-left: 20px;">
-      {{comment.body}} | {{comment.created|timesince}} ago | {{comment.user_fullname}}
+<div id="updates">
+  {% for update in updates %}
+    <p>{{update.body}} | {{update.created|timesince}} ago | {{update.user_fullname}} | 
+      <a href="javascript:void()" onclick="toggleComment({{update.key.id}})" id="comment-link-{{update.key.id}}">Comment</a>
+      <form action="/comment/{{update.key.id}}" method="post" id="comment-form-{{update.key.id}}" style="display: none;">
+        <input type="text" name="body" /> <input type="submit" value="Comment" />
+        <a href="javascript:void()" onclick="toggleComment({{update.key.id}})">Cancel</a>
+      </form>
     </p>
+    {% for comment in update.comment_set %}
+      <p style="margin-left: 20px;">
+        {{comment.body}} | {{comment.created|timesince}} ago | {{comment.user_fullname}}
+      </p>
+    {% endfor %}
   {% endfor %}
-{% endfor %}
-<div id="load-more">
-  <a href="javascript:loadMoreUpdates('{{updates_query.cursor}}')">Load more...</a>
+</div>
+<div>
+  <a id="load-more" href="javascript:loadMoreUpdates('{{updates_query.cursor}}')">Load more...</a>
 </div>
 
 
@@ -40,15 +41,10 @@
     $.get('/updates/' + cursor, function(data) {
       var foo = JSON.parse(data);
       for(var i=0; i<foo[0].messages.length;i++){
-        $("#content")[0].innerHTML += renderUpdate(foo[0].messages[i])
+        $("#updates")[0].innerHTML += renderUpdate(foo[0].messages[i])
       }
-      $("#load-more").remove();
-      $("#content")[0].innerHTML += renderLoadMore(foo[1].cursor);
+      $("#load-more")[0].href = 'javascript:loadMoreUpdates("' + foo[1].cursor + '")';
     });
-  }
-
-  function renderLoadMore(cursor){
-    return "<div id='load-more'><a href='javascript:loadMoreUpdates(\"" + cursor + "\")'>Load more...</a></div>";
   }
 
   function renderUpdate(update){
