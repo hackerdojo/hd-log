@@ -7,24 +7,37 @@
 </form>
 <div id="updates">
   {% for update in updates %}
-    <p>{{update.body}} | {{update.created|timesince}} ago | {{update.user_fullname}} | 
-      <a href="javascript:void()" onclick="toggleComment({{update.key.id}})" id="comment-link-{{update.key.id}}">Comment</a>
-      <form action="/comment/{{update.key.id}}" method="post" id="comment-form-{{update.key.id}}" style="display: none;">
+    <div class="update">
+      <span class="body">{{update.body}}</span> | 
+      <span class="since">{{update.created|timesince}} ago</span> | 
+      <span class="user-fullname">{{update.user_fullname}}</span> | 
+      <a class="comment-link" href="javascript:void(0);" onClick="toggleComment({{update.key.id}})" id="comment-link-{{update.key.id}}">Comment</a>
+      <form class="comment-form" action="/comment/{{update.key.id}}" method="post" id="comment-form-{{update.key.id}}" style="display: none;">
         <input type="text" name="body" /> <input type="submit" value="Comment" />
-        <a href="javascript:void()" onclick="toggleComment({{update.key.id}})">Cancel</a>
+        <a class="comment-link-cancel" href="javascript:void(0)" onclick="toggleComment({{update.key.id}})">Cancel</a>
       </form>
-    </p>
-    {% for comment in update.comment_set %}
-      <p style="margin-left: 20px;">
-        {{comment.body}} | {{comment.created|timesince}} ago | {{comment.user_fullname}}
-      </p>
-    {% endfor %}
-  {% endfor %}
+      <div class="comments">
+        {% for comment in update.comment_set %}
+          <div class="comment">
+            <span class="body">{{comment.body}}</span> |
+            <span class="since"> {{comment.created|timesince}} ago</span> | 
+            <span class="user-fullname"> {{comment.user_fullname}}</span>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+ {% endfor %}
 </div>
 <div>
   <a id="load-more" href="javascript:loadMoreUpdates('{{updates_query.cursor}}')">Load more...</a>
 </div>
 
+<!-- required if there is no comments on the first page and we are pulling a second page -->
+<div style="display:none"><div class="comment">
+  <span class="body"></span> |
+  <span class="since"></span> | 
+  <span class="user-fullname"></span>
+</div></div>
 
 <script type="text/javascript">
   function toggleComment(id) {
@@ -41,29 +54,33 @@
     $.get('/updates/' + cursor, function(data) {
       var foo = JSON.parse(data);
       for(var i=0; i<foo[0].messages.length;i++){
-        $("#updates")[0].innerHTML += renderUpdate(foo[0].messages[i])
+        $("#updates")[0].appendChild(updateNode(foo[0].messages[i]));
       }
       $("#load-more")[0].href = 'javascript:loadMoreUpdates("' + foo[1].cursor + '")';
     });
   }
 
-  function renderUpdate(update){
-    u  = "<p>" + update.body + " | " + update.ago + " | " + update.user_fullname + " |";
-    u +=   "<a href='javascript:void()' onclick='toggleComment(" + update.id + ")' id='comment-link-" + update.id + "'>Comment</a>";
-    u +=   "<form action='/comment/"+update.id+"' method='post' id='comment-form-"+update.id+"' style='display:none;'>";
-    u +=     "<input type='text' name='body'/><input type='submit' value='Comment' />";      
-    u +=     "<a href='javascript:void()' onclick='toggleComment("+u.id+")'>Cancel</a>";
-    u +=   "</form>";
-    u += "</p>";
-    for(var i=0; i<update.comments.length; i++){u += renderComment(update.comments[i]);}
-    return u;
+  function updateNode(update){
+    var newNode = $(".update")[0].cloneNode(true);
+    $(".body",newNode)[0].innerHTML = update.body;
+    $(".since",newNode)[0].innerHTML = update.ago;
+    $(".user-fullname",newNode)[0].innerHTML = update.user_fullname;
+    $(".comment-link",newNode)[0].onclick = function(){toggleComment(update.id)};
+    $(".comment-link",newNode)[0].id = "comment-link-" + update.id;
+    $(".comment-form",newNode)[0].action = "/comment/" + update.id;
+    $(".comment-form",newNode)[0].id ="comment-form-" + update.id;
+    $(".comment-link-cancel",newNode)[0].onclick = function(){toggleComment(update.id)};
+    $(".comments",newNode)[0].innerHTML = "";
+    for(var i=0; i < update.comments.length; i++){$(".comments",newNode)[0].appendChild(commentNode(update.comments[i]));}
+    return newNode;
   }
 
-  function renderComment(comment){
-    c  = '<p style="margin-left: 20px;">';
-    c +=   comment.body + " | " +  comment.ago + " | " + comment.user_fullname;
-    c += '</p>';
-    return c;
+  function commentNode(comment){
+    var newNode = $(".comment")[0].cloneNode(true);
+    $(".body",newNode)[0].innerHTML = comment.body;
+    $(".since",newNode)[0].innerHTML = comment.ago;
+    $(".user-fullname",newNode)[0].innerHTML = comment.user_fullname;
+    return newNode;
   }
 </script>
 {% endblock %}

@@ -1,5 +1,5 @@
 body { font-family: Verdana,Arial,sans-serif; margin: 0px;}
-#wrapper { margin-left: auto; margin-right: auto; width: 700px; }
+#wrapper { margin-left: auto; margin-right: auto; width: 900px; }
 
 #top a:visited { color: blue;}
 #top { height: 20px; border-bottom: 1px solid #ccc; text-align: right; font-size: 12px; padding-right: 5px; padding-top: 4px; }
@@ -31,3 +31,6 @@ h4 { font-size: smaller; }
 .label { font-size: smaller; font-weight: bold; margin-top: 10px;}
 #content h2 { margin-bottom: 5px; margin-top: 5px;}
 #content table { margin-bottom: 20px;}
+
+.comment{ padding-left:10px;}
+.update{ min-height:50px;}
