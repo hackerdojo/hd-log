@@ -38,7 +38,7 @@
 
   function loadMoreUpdates(cursor){
     $.get('/updates/' + cursor, function(data) {
-      var foo = eval("(" + data + ")" );
+      var foo = JSON.parse(data);
       for(var i=0; i<foo[0].messages.length;i++){
         $("#content")[0].innerHTML += renderUpdate(foo[0].messages[i])
       }
