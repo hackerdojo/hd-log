@@ -32,5 +32,7 @@ h4 { font-size: smaller; }
 #content h2 { margin-bottom: 5px; margin-top: 5px;}
 #content table { margin-bottom: 20px;}
 
-.comment{ padding-left:10px;}
-.update{ min-height:50px;}
+.comment { padding-left:10px;}
+.update { min-height:50px;}
+.update-input { width:500px;}
+.comment-form { clear:both;}
