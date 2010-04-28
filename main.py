@@ -1,6 +1,7 @@
 import logging
 import urllib
 
+from google.appengine.api import mail
 from google.appengine.ext import webapp, db
 from google.appengine.api import urlfetch, memcache, users
 from google.appengine.ext.webapp import util, template
@@ -39,6 +40,21 @@ def fullname(username):
         return username
     else:
         return fullname
+
+def str_to_bool(str):
+    if str == "true": return True
+    else: return False
+
+def sendNotifyIoNotifications(comment):
+    profile = Profile.all().filter('emailNotification =',True)
+
+def sendEmailNotifications(update):
+    message = mail.EmailMessage(sender="HD-Logs <santiago1717@gmail.com>",subject="New Log")
+    message.body = "Someone just posted on HD-Logs\n Log: " + update.body + "\n Wrote by:" + update.user_fullname()
+    profiles = Profile.all().filter('emailNotification =',True)
+    for profile in profiles:
+        message.to = str(profile.user)
+        message.send()
 
 # Worket to handle the fullname queue request.
 class UserWorker(webapp.RequestHandler):
@@ -127,6 +143,8 @@ class MainHandler(webapp.RequestHandler):
     
     def post(self):
         update = Update(body=self.request.get('body'))
+        sendEmailNotifications(update)
+        sendNotifyIoNotifications(update)
         update.put()
         self.redirect('/')
 
@@ -142,10 +160,6 @@ class NotifyIoNotificationHandler(webapp.RequestHandler):
         user.notifyIoNotification = str_to_bool(self.request.get('enable'))
         user.put()
 
-def str_to_bool(str):
-    if str == "true": return True
-    else: return False
-
 def main():
     application = webapp.WSGIApplication([
         ('/', MainHandler),
@@ -156,7 +170,6 @@ def main():
         ('/worker/user', UserWorker),
       ], debug=True)
     util.run_wsgi_app(application)
-
 
 if __name__ == '__main__':
     main()
