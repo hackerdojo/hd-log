@@ -1,6 +1,8 @@
 import logging
 import urllib
-
+import urllib2
+import hashlib
+ 
 from google.appengine.api import mail
 from google.appengine.ext import webapp, db
 from google.appengine.api import urlfetch, memcache, users
@@ -11,7 +13,7 @@ from django.template.defaultfilters import timesince
 
 #CONSTANTS#
 UPDATES_LIMIT = 10
-
+NOTIFYIO_KEY = "l4y4eaxed6v5x2le7y"
 
 # Parsing the username ourselfs because the nickname on GAE does funky stuff with non @gmail account
 def username(user):
@@ -46,7 +48,13 @@ def str_to_bool(str):
     else: return False
 
 def sendNotifyIoNotifications(comment):
-    profile = Profile.all().filter('emailNotification =',True)
+    profiles = Profile.all().filter('emailNotification =',True)
+    for profile in profiles:
+      md5email = hashlib.md5(str(profile.user)).digest()
+      values = {'text': 'test', 'dsadsa':'dsadsa'}
+      logging.error("dsadsadsa %s", str(md5email))
+      req = urllib2.Request("http://api.notify.io/v1/notify/" + str(md5email) + "?api_key=" + NOTIFYIO_KEY,urllib.urlencode(values))  
+      urllib2.urlopen(req)
 
 def sendEmailNotifications(update):
     message = mail.EmailMessage(sender="HD-Logs <santiago1717@gmail.com>",subject="New Log")
