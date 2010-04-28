@@ -49,6 +49,21 @@ class UserWorker(webapp.RequestHandler):
         memcache.set('/users/%s:fullname' % username, "%s %s" % (user['first_name'], user['last_name']), month_ttl)
 
 #Data Models:
+class Profile(db.Model):
+    user = db.UserProperty(auto_current_user_add=True)
+    emailNotification = db.BooleanProperty(default=False)
+    notifyIoNotification = db.BooleanProperty(default=False)
+
+    @staticmethod
+    def get_or_create():
+        profile = Profile.all().filter('user =',users.get_current_user()).fetch(1)
+        if len(profile) == 0:
+            profile = Profile()
+            profile.put()
+            return profile
+        else:
+            return profile[0]
+
 class Update(db.Model):
     user = db.UserProperty(auto_current_user_add=True)
     body = db.StringProperty(required=True, multiline=True)
@@ -115,11 +130,29 @@ class MainHandler(webapp.RequestHandler):
         update.put()
         self.redirect('/')
 
+class EmailNotificationHandler(webapp.RequestHandler):
+    def post(self):
+        user = Profile.get_or_create()
+        user.emailNotification = str_to_bool(self.request.get('enable'))
+        user.put()
+
+class NotifyIoNotificationHandler(webapp.RequestHandler):
+    def post(self):
+        user = Profile.get_or_create()
+        user.notifyIoNotification = str_to_bool(self.request.get('enable'))
+        user.put()
+
+def str_to_bool(str):
+    if str == "true": return True
+    else: return False
+
 def main():
     application = webapp.WSGIApplication([
         ('/', MainHandler),
         ('/updates/(.+)', UpdatesHandler),
         ('/comment/(.+)', CommentHandler),
+        ('/notifications/email', EmailNotificationHandler),
+        ('/notifications/notifyio', NotifyIoNotificationHandler),
         ('/worker/user', UserWorker),
       ], debug=True)
     util.run_wsgi_app(application)

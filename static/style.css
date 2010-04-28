@@ -36,3 +36,4 @@ h4 { font-size: smaller; }
 .update { min-height:50px;}
 .update-input { width:500px;}
 .comment-form { clear:both;}
+#notificationPanel{position:absolute; right:0px; top:20px; width:150px; height:150px; background:grey;}
