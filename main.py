@@ -147,6 +147,7 @@ class MainHandler(webapp.RequestHandler):
             login_url = users.create_login_url('/')
         updates_query = Update.all().order('-created')
         updates = updates_query.fetch(UPDATES_LIMIT)
+        profile = Profile.get_or_create()
         self.response.out.write(template.render('templates/main.html', locals()))
     
     def post(self):

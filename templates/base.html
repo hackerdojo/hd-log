@@ -34,6 +34,8 @@
       </div>
     </div>
   <script type="text/javascript">
+    if("True" == "{{profile.emailNotification}}") $("#emailNotification")[0].checked=true;
+    if("True" == "{{profile.notifyIoNotification}}") $("#notifyIoNotification")[0].checked=true;
     function updateEmailNotification(){
       $.post('/notifications/email',{enable: $("#emailNotification")[0].checked});
     }
