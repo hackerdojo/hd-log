@@ -50,10 +50,11 @@ def str_to_bool(str):
 def sendNotifyIoNotifications(comment):
     profiles = Profile.all().filter('emailNotification =',True)
     for profile in profiles:
-      md5email = hashlib.md5(str(profile.user)).digest()
+      md5email = hashlib.md5(str(profile.user)).hexdigest()
       values = {'text': 'test', 'dsadsa':'dsadsa'}
-      logging.error("dsadsadsa %s", str(md5email))
-      req = urllib2.Request("http://api.notify.io/v1/notify/" + str(md5email) + "?api_key=" + NOTIFYIO_KEY,urllib.urlencode(values))  
+      url = "http://api.notify.io/v1/notify/" + str(md5email) + "?api_key=" + NOTIFYIO_KEY
+      logging.error("dsadsadsa %s", url)
+      req = urllib2.Request(url,urllib.urlencode(values))  
       urllib2.urlopen(req)
 
 def sendEmailNotifications(update):
