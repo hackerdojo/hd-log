@@ -31,20 +31,20 @@ h4 { font-size: smaller; }
 #content h2 { margin-bottom: 5px; margin-top: 5px;}
 #content table { margin-bottom: 20px;}
 
-.update { min-height:50px; position:relative; line-height:16px; font-size:14px; margin: 10px 10px 10px 10px; display:block;}
+.update { min-height:50px; position:relative; line-height:16px; font-size:12px; margin: 10px 10px 10px 10px; display:block;}
 .update .avatar {position:absolute; display:block; height:50px; width:50px; left:0; margin: 0 10px 0 0; overflow:hidden;}
-.update .avatar img {height:50px; width:50px;}
+.update .avatar img {height:50px; width:50px; -webkit-border-radius: 2px;-moz-border-radius: 2px;border-radius: 2px;}
 .update .update-body {margin-left: 56px; min-height:48px; display:block;}
 .update-meta {color:#999999; display:block; font-size:11px;}
 .update .user-fullname {color:#D50025;}
 .comment .comment-fullname {color:#D50025;}
 .update-input { width:90%; height:50px}
-.comment { padding-left:90px; position:relative; line-height:15pxl font-size:13px; margin: 10px 10px 10px 10px; display:block;}
+.comment { padding-left:90px; position:relative; line-height:15pxl font-size:12px; margin: 10px 10px 10px 10px; display:block;}
 .comment-form { margin-left:50px}
 .comment-form-controls{ clear:both; margin-left:50px}
 .comment-form textarea {width:500px; height:100px; margin: 10px 0 0 0;}
 .comment .small-avatar {position:absolute; display:block; height:40px; width:40px; left:45px; margin: 0 10px 0 0; overflow:hidden;}
-.comment .small-avatar img {height:40px; width:40px;}
+.comment .small-avatar img {height:40px; width:40px;-webkit-border-radius: 2px;-moz-border-radius: 2px;border-radius: 2px;}
 .comment-meta {color:#999999; display:block; font-size:11px;}
 #notificationPanel{background:none repeat scroll 0 0 #EEEEEE;border-color:#D50025;border-style:solid;border-width:0 0 2px;height:50px;position:absolute;right:0;top:25px;width:290px;}
 #load-more{background-color:#FFFFFF;border-color:#DDDDDD #AAAAAA #AAAAAA #DDDDDD;border-style:solid;border-width:1px;display:block;font-size:14px;font-weight:bold;height:22px;line-height:1.5em;margin-bottom:6px;outline:medium none;padding:6px 0;text-align:center;text-shadow:1px 1px 1px #FFFFFF;width:100%;}
