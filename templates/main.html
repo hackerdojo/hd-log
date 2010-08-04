@@ -9,37 +9,54 @@
 <div id="updates">
   {% for update in updates %}
     <div class="update">
-      <span class="body">{{update.body}}</span> | 
-      <span class="since">{{update.created|timesince}} ago</span> | 
-      <span class="user-fullname">{{update.user_fullname}}</span> | 
-      <a class="comment-link" href="javascript:void(0);" onClick="toggleComment({{update.key.id}})" id="comment-link-{{update.key.id}}">Comment</a>
-      <form class="comment-form" action="/comment/{{update.key.id}}" method="post" id="comment-form-{{update.key.id}}" style="display: none;">
-        <input type="text" name="body" /> <input type="submit" value="Comment" />
-        <a class="comment-link-cancel" href="javascript:void(0)" onclick="toggleComment({{update.key.id}})">Cancel</a>
-      </form>
+      <span class="avatar"><img class="update-image-avatar" src="{{update.image_url}}"/></span>
+      <span class="update-body">
+        <span class="update-content">
+          <span class="user-fullname">{{update.user_fullname}}</span>
+          <span class="body">{{update.body}}</span>  
+        </span>
+        <span class="update-meta">
+          <span class="since">{{update.created|timesince}} ago</span> | 
+          <a class="comment-link" href="javascript:void(0);" onClick="toggleComment({{update.key.id}})" id="comment-link-{{update.key.id}}">Comment</a>
+        </span>
+      </span>
       <div class="comments">
         {% for comment in update.comment_set %}
           <div class="comment">
-            <span class="body">{{comment.body}}</span> |
-            <span class="since"> {{comment.created|timesince}} ago</span> | 
-            <span class="user-fullname"> {{comment.user_fullname}}</span>
+            <span class="small-avatar"><img class="comment-image-avatar"  src="{{comment.image_url}}"/></span>
+            <span class="comment-content">
+              <span class="comment-fullname">{{comment.user_fullname}}</span> 
+              <span class="comment-body">{{comment.body}}</span>
+            </span> 
+            <span class="comment-meta"> {{comment.created|timesince}} ago</span> 
           </div>
         {% endfor %}
       </div>
+      <form class="comment-form" action="/comment/{{update.key.id}}" method="post" id="comment-form-{{update.key.id}}" style="display: none;">
+        <textarea name="body"></textarea> 
+        <div class="comment-form-controls">
+          <input type="submit" value="Comment" />
+          <button type="button" class="comment-link-cancel" onclick="toggleComment({{update.key.id}})">Cancel</button>
+        </div>
+      </form>
     </div>
  {% endfor %}
 </div>
 <div>
-  <a id="load-more" href="javascript:loadMoreUpdates('{{updates_query.cursor}}')">Load more...</a>
+  <a id="load-more" href="javascript:loadMoreUpdates('{{updates_query.cursor}}')">More</a>
 </div>
 
 <!-- required if there is no comments on the first page and we are pulling a second page -->
-<div style="display:none"><div class="comment">
-  <span class="body"></span> |
-  <span class="since"></span> | 
-  <span class="user-fullname"></span>
-</div></div>
-
+<div class="comment" style="display:none">
+  <span class="small-avatar"><img class="comment-image-avatar"  src=""/></span>
+  <span class="comment-content">
+    <span class="comment-fullname"></span> 
+    <span class="comment-body"></span>
+  </span> 
+  <span class="comment-meta"></span> 
+</div>
+ 
+ 
 <script type="text/javascript">
   function toggleComment(id) {
     if ($('#comment-form-'+id).css('display') == 'inline') {
@@ -48,6 +65,7 @@
     } else {
       $('#comment-form-'+id).css('display', 'inline');
       $('#comment-link-'+id).css('display', 'none');
+      $.scrollTo('#comment-form-'+id);
     }
   }
 
@@ -66,6 +84,7 @@
     $(".body",newNode)[0].innerHTML = update.body;
     $(".since",newNode)[0].innerHTML = update.ago;
     $(".user-fullname",newNode)[0].innerHTML = update.user_fullname;
+    $(".update-image-avatar",newNode)[0].src = update.image_url;
     $(".comment-link",newNode)[0].onclick = function(){toggleComment(update.id)};
     $(".comment-link",newNode)[0].id = "comment-link-" + update.id;
     $(".comment-form",newNode)[0].action = "/comment/" + update.id;
@@ -78,9 +97,11 @@
 
   function commentNode(comment){
     var newNode = $(".comment")[0].cloneNode(true);
-    $(".body",newNode)[0].innerHTML = comment.body;
-    $(".since",newNode)[0].innerHTML = comment.ago;
-    $(".user-fullname",newNode)[0].innerHTML = comment.user_fullname;
+    $(".comment-body",newNode)[0].innerHTML = comment.body;
+    $(".comment-meta",newNode)[0].innerHTML = comment.ago;
+    $(".comment-fullname",newNode)[0].innerHTML = comment.user_fullname;
+    $(".comment-image-avatar",newNode)[0].src = comment.image_url;
+    newNode.style.display = "block";
     return newNode;
   }
 </script>

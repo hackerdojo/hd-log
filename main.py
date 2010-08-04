@@ -65,7 +65,8 @@ class Update(db.Model):
     user = db.UserProperty(auto_current_user_add=True)
     body = db.StringProperty(required=True, multiline=True)
     created = db.DateTimeProperty(auto_now_add=True)
-    
+    image_url = db.StringProperty()
+
     def user_fullname(self):
       return dojo_name_api.fullname(username(self.user))
 
@@ -74,6 +75,7 @@ class Comment(db.Model):
     body = db.StringProperty(required=True)
     created = db.DateTimeProperty(auto_now_add=True)
     update = db.ReferenceProperty(Update)
+    image_url = db.StringProperty()
 
     def user_fullname(self):
       return dojo_name_api.fullname(username(self.user))
@@ -84,6 +86,7 @@ def comment_dict(comment):
     'id': str(comment.key().id()),
     'user_fullname': comment.user_fullname(),
     'body': comment.body,
+    'image_url':comment.image_url,
     'ago': timesince(comment.created)}
 
 def updates_dict(update):
@@ -92,6 +95,7 @@ def updates_dict(update):
     'user_fullname':update.user_fullname(),
     'body':update.body,
     'ago':timesince(update.created),
+    'image_url':update.image_url,
     'comments':map(lambda c: comment_dict(c), update.comment_set) }
 
 # Handlers:
@@ -105,9 +109,11 @@ class CommentHandler(webapp.RequestHandler):
     def post(self, update_id):
         update = Update.get_by_id(int(update_id))
         if update:
+            image = 'http://0.gravatar.com/avatar/%s' % hashlib.md5(str(users.get_current_user()) + DOMAIN).hexdigest()
             comment = Comment(
                 body=self.request.get('body'),
-                update=update)
+                update=update,
+                image_url=image)
             comment.put()
         self.redirect('/')
 
@@ -124,7 +130,8 @@ class MainHandler(webapp.RequestHandler):
         self.response.out.write(template.render('templates/main.html', locals()))
     
     def post(self):
-        update = Update(body=self.request.get('body'))
+        image = 'http://0.gravatar.com/avatar/%s' % hashlib.md5(str(users.get_current_user()) + DOMAIN).hexdigest()
+        update = Update(body=self.request.get('body'),image_url=image)
         sendEmailNotifications(update)
         sendNotifyIoNotifications(update)
         update.put()
