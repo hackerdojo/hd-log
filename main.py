@@ -11,7 +11,9 @@ from google.appengine.api.labs import taskqueue
 from django.utils import simplejson
 from django.template.defaultfilters import timesince 
 
-import dojo_name_api, keys, notify_io, logging
+import dojo_name_api, keys, notify_io, logging, cgi
+
+
 
 #CONSTANTS#
 UPDATES_LIMIT = 10
@@ -25,6 +27,9 @@ def username(user):
 def str_to_bool(str):
     if str == "true": return True
     else: return False
+
+def sanitizeHtml(value):
+    return cgi.escape(value)
 
 def sendNotifyIoNotifications(update):
     profiles = Profile.all().filter('notifyIoNotification =',True)
@@ -111,7 +116,7 @@ class CommentHandler(webapp.RequestHandler):
         if update:
             image = 'http://0.gravatar.com/avatar/%s' % hashlib.md5(str(users.get_current_user()) + DOMAIN).hexdigest()
             comment = Comment(
-                body=self.request.get('body'),
+                body=sanitizeHtml(self.request.get('body')),
                 update=update,
                 image_url=image)
             comment.put()
@@ -131,7 +136,7 @@ class MainHandler(webapp.RequestHandler):
     
     def post(self):
         image = 'http://0.gravatar.com/avatar/%s' % hashlib.md5(str(users.get_current_user()) + DOMAIN).hexdigest()
-        update = Update(body=self.request.get('body'),image_url=image)
+        update = Update(body=sanitizeHtml(self.request.get('body')),image_url=image)
         sendEmailNotifications(update)
         sendNotifyIoNotifications(update)
         update.put()
