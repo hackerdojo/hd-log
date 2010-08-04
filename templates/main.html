@@ -33,7 +33,7 @@
         {% endfor %}
       </div>
       <form class="comment-form" action="/comment/{{update.key.id}}" method="post" id="comment-form-{{update.key.id}}" style="display: none;">
-        <textarea name="body"></textarea> 
+        <textarea class="comment-form-textarea" id="comment-form-textarea-{{update.key.id}}" name="body"></textarea> 
         <div class="comment-form-controls">
           <input type="submit" value="Comment" />
           <button type="button" class="comment-link-cancel" onclick="toggleComment({{update.key.id}})">Cancel</button>
@@ -65,7 +65,7 @@
     } else {
       $('#comment-form-'+id).css('display', 'inline');
       $('#comment-link-'+id).css('display', 'none');
-      $.scrollTo('#comment-form-'+id);
+      $.scrollTo('#comment-form-textarea-'+id);
     }
   }
 
@@ -87,6 +87,7 @@
     $(".update-image-avatar",newNode)[0].src = update.image_url;
     $(".comment-link",newNode)[0].onclick = function(){toggleComment(update.id)};
     $(".comment-link",newNode)[0].id = "comment-link-" + update.id;
+    $(".comment-form-textarea",newNode)[0].id = "comment-form-textarea-" + update.id;
     $(".comment-form",newNode)[0].action = "/comment/" + update.id;
     $(".comment-form",newNode)[0].id ="comment-form-" + update.id;
     $(".comment-link-cancel",newNode)[0].onclick = function(){toggleComment(update.id)};
