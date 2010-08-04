@@ -16,7 +16,7 @@ import dojo_name_api, keys, notify_io, logging, cgi
 
 
 #CONSTANTS#
-UPDATES_LIMIT = 5
+UPDATES_LIMIT = 100
 DOMAIN = "@gmail.com"
 SENDER_MAIL = "HD-Logs <santiago1717@gmail.com>"
 
