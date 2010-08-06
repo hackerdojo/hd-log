@@ -20,7 +20,7 @@ def fullname(username):
     fullname = memcache.get('/users/%s:fullname' % username)
     if not fullname:
         taskqueue.add(url='/worker/user', params={'username': username})
-        memcache.set('/users/%s:fullname' % username, username, 10)
+        memcache.set('/users/%s:fullname' % username, username, 100)
         return username
     else:
         return fullname

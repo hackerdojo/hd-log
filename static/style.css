@@ -36,6 +36,8 @@ h4 { font-size: smaller; }
 .update .avatar img {height:50px; width:50px; -webkit-border-radius: 2px;-moz-border-radius: 2px;border-radius: 2px;}
 .update .update-body {margin-left: 56px; min-height:48px; display:block;}
 .update-meta {color:#999999; display:block; font-size:11px;}
+.meta-right {text-align:right;color:#999999; display:block; font-size:11px;}
+.meta-left {text-align:left;color:#999999; display:block; font-size:11px;}
 .update .user-fullname {color:#D50025;}
 .comment .comment-fullname {color:#D50025;}
 .update-input { width:90%; height:50px}

@@ -13,12 +13,12 @@ from django.template.defaultfilters import timesince
 
 import dojo_name_api, keys, notify_io, logging, cgi
 
-
-
 #CONSTANTS#
 UPDATES_LIMIT = 100
 DOMAIN = "@gmail.com"
 SENDER_MAIL = "HD-Logs <santiago1717@gmail.com>"
+APP_NAMES = ["Kudos", "Signin","Events"]
+APP_NAMES_NO_NOTIFY = ["Signin","Events"]
 
 # Parsing the username ourselfs because the nickname on GAE does funky stuff with non @gmail account
 def username(user):
@@ -45,8 +45,15 @@ def sendEmailNotifications(update):
 # Worket to handle the fullname queue request.
 class UserWorker(webapp.RequestHandler):
     def post(self):
-        username = self.request.get('username')
         month_ttl = 3600*24*28
+        username = self.request.get('username')
+        try:
+            index =  APP_NAMES.index(name)
+        except ValueError:
+            index = -1
+
+        if index != -1:   
+            memcache.set('/users/%s:fullname' % username, username, month_ttl)
         user = dojo_name_api.dojo_name('/users/%s' % username, month_ttl)
         memcache.set('/users/%s:fullname' % username, "%s %s" % (user['first_name'], user['last_name']), month_ttl)
 
@@ -113,14 +120,46 @@ class UpdatesHandler(webapp.RequestHandler):
 class CommentHandler(webapp.RequestHandler):
     def post(self, update_id):
         update = Update.get_by_id(int(update_id))
-        if update:
+        body = sanitizeHtml(self.request.get('body'))
+        if update and len(body) > 0 and len(body) < 500:
             image = 'http://0.gravatar.com/avatar/%s' % hashlib.md5(str(users.get_current_user()) + DOMAIN).hexdigest()
             comment = Comment(
-                body=sanitizeHtml(self.request.get('body')),
+                body=body,
                 update=update,
                 image_url=image)
             comment.put()
         self.redirect('/')
+
+class ApiHandler(webapp.RequestHandler):
+    def post(self):
+        body = sanitizeHtml(self.request.get('body'))
+        name = sanitizeHtml(self.request.get('name'))
+        key = self.request.get('key')
+        if body == "" or name == "" or key == "":
+            self.response.out.write("body,name and key are required")
+            return 
+        if key == keys.logs_key:
+            try:
+                index =  APP_NAMES.index(name)
+            except ValueError:
+                index = -1
+
+            if index != -1:
+                user = users.User(name + DOMAIN)
+                update = Update(body=body,image_url="/static/dojo_icon.png",user=user)
+                update.put()
+                try:
+                    index =  APP_NAMES_NO_NOTIFY.index(name)
+                except ValueError:
+                    index = -1
+                if index == -1:
+                    sendNotifyIoNotifications(update)
+                    sendEmailNotifications(update)
+                self.response.out.write("OK")
+            else:
+                self.response.out.write("Not a valid App")
+        else:
+            self.response.out.write("Invalid Key")
 
 class MainHandler(webapp.RequestHandler):
     def get(self):
@@ -136,10 +175,12 @@ class MainHandler(webapp.RequestHandler):
     
     def post(self):
         image = 'http://0.gravatar.com/avatar/%s' % hashlib.md5(str(users.get_current_user()) + DOMAIN).hexdigest()
-        update = Update(body=sanitizeHtml(self.request.get('body')),image_url=image)
-        sendEmailNotifications(update)
-        sendNotifyIoNotifications(update)
-        update.put()
+        body = sanitizeHtml(self.request.get('body'))
+        if len(body) > 0 and len(body) < 500:
+            update = Update(body=body,image_url=image)
+            sendEmailNotifications(update)
+            sendNotifyIoNotifications(update)
+            update.put()
         self.redirect('/')
 
 class EmailSendNotificationHandler(webapp.RequestHandler):
@@ -179,6 +220,7 @@ def main():
         ('/', MainHandler),
         ('/updates/(.+)', UpdatesHandler),
         ('/comment/(.+)', CommentHandler),
+        ('/api', ApiHandler),
         ('/notifications/email', EmailEnableNotificationHandler),
         ('/notifications/email/send', EmailSendNotificationHandler),
         ('/notifications/notifyio', NotifyIoEnableNotificationHandler),
