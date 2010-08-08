@@ -38,8 +38,8 @@ h4 { font-size: smaller; }
 .update-meta {color:#999999; display:block; font-size:11px;}
 .meta-right {text-align:right;color:#999999; display:block; font-size:11px;}
 .meta-left {text-align:left;color:#999999; display:block; font-size:11px;}
-.update .user-fullname {color:#D50025;}
-.comment .comment-fullname {color:#D50025;}
+.update .user-fullname {color:black; font-weight:bold;}
+.comment .comment-fullname {color:black; font-weight:bold;}
 .update-input { width:90%; height:50px}
 .comment { padding-left:90px; position:relative; line-height:15pxl font-size:12px; margin: 10px 10px 10px 10px; display:block;}
 .comment-form { margin-left:50px}
