@@ -15,8 +15,8 @@ import dojo_name_api, keys, notify_io, logging, cgi
 
 #CONSTANTS#
 UPDATES_LIMIT = 100
-DOMAIN = "@gmail.com"
-SENDER_MAIL = "HD-Logs <santiago1717@gmail.com>"
+DOMAIN = "@hackerdojo.com"
+SENDER_MAIL = "Signin Machine <signin@hackerdojo.com>"
 APP_NAMES = ["Kudos", "Signin","Events"]
 APP_NAMES_NO_NOTIFY = ["Signin","Events"]
 

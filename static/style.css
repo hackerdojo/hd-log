@@ -45,8 +45,8 @@ h4 { font-size: smaller; }
 .comment-form { margin-left:50px}
 .comment-form-controls{ clear:both; margin-left:50px}
 .comment-form textarea {width:500px; height:100px; margin: 10px 0 0 0;}
-.comment .small-avatar {position:absolute; display:block; height:40px; width:40px; left:45px; margin: 0 10px 0 0; overflow:hidden;}
-.comment .small-avatar img {height:40px; width:40px;-webkit-border-radius: 2px;-moz-border-radius: 2px;border-radius: 2px;}
+.comment .small-avatar {position:absolute; display:block; height:35px; width:35px; left:45px; margin: 0 10px 0 0; overflow:hidden;}
+.comment .small-avatar img {height:35px; width:35px;-webkit-border-radius: 2px;-moz-border-radius: 2px;border-radius: 2px;}
 .comment-meta {color:#999999; display:block; font-size:11px;}
 #notificationPanel{background:none repeat scroll 0 0 #EEEEEE;border-color:#D50025;border-style:solid;border-width:0 0 2px;height:50px;position:absolute;right:0;top:25px;width:290px;}
 #load-more{background-color:#FFFFFF;border-color:#DDDDDD #AAAAAA #AAAAAA #DDDDDD;border-style:solid;border-width:1px;display:block;font-size:14px;font-weight:bold;height:22px;line-height:1.5em;margin-bottom:6px;outline:medium none;padding:6px 0;text-align:center;text-shadow:1px 1px 1px #FFFFFF;width:100%;}
