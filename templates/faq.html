@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block content %}
+<div id="faq">
+  <h3>F.A.Q</h3>
+  <div>
+    <b>What is this new "Log"?</b><br/>
+    This is a <b>micro-blogging application for the dojo.</b> <br/>
+    Feel free to keep other members updated of your location/activity in the dojo, share with everyone your hacks, questions, ideas and projects!<br/>
+    According to the last Member Survey, the number one thing that members requested was some way to find out what other Members were up to, where they were in the Dojo, who was open for chatting, etc. <br/>
+  </div>
+  <div>
+    <b>How to use it?</b><br/>
+    Simple go to <b><a href="http://log.hackerdojo.com">log.hackerdojo.com</a></b> (log in with your hackerdojo account) and read the timeline and post your updates.<br/>
+  </div>
+  <div>
+    <b>I want to improve the code, where is it?</b><br/>
+    The log application is open source and the main repository can be found on <b><a href="http://github.com/hackerdojo/hd-log">github</a></b>. 
+    The code is <b>python/GAE</b> and we are waiting for your pull request!<br/>
+  </div>
+  <div>
+    <b>I want to give ideas, feedback, suggestions, or report a bug!</b><br/>
+    Please use the "Issues" tab on <a href="http://github.com/hackerdojo/hd-log/issues">github</a><br/>
+  </div>
+  <div>
+    <b>How the Notifications work (advanced users)</b><br/>
+    There are 2 ways to get notifications, the first is using notify.io and the second one is email.<br/>
+    Simply click on the notification tab on top of the applications and enable either one (or both). <br/>
+    Keep in mind that this will send a notification each time ANYONE posts a new update, so <b>be careful with using the email one without any kind of filter on your inbox.</b><br/>
+  </div>
+  <div>
+    <b>How to set up Notify.io to get desktop notifications on mac osx?</b><br/>
+    Follow the next simple steps. It is really worth it, you will get desktop notifications!<br/>
+    1) Point your browser to notify.io<br/>
+    2) Log in with a gmail account. This needs to be a @gmail.com account, sadly notify.io only works with gmails accounts right now, until there is a better way to make this happen you will need to log in with a gmail account and then add you hacker dojo email to it<br/>
+    3) Click on Settings (http://www.notify.io/settings) and add your hacker dojo email address.<br/>
+    4) Log into your hacker dojo email and validate this merge<br/>
+    5) Download the Desktop Notifier( http://notify-io.googlecode.com/files/DesktopNotifier.dmg ) <br/>
+    6) Click on Outlets ( http://www.notify.io/outlets ) and download the listen url, open that file(it will link the desktop notifier with your notify.io account)<br/>
+    7) Post a message in the Log<br/>
+    8) Click on the Sources screen on notify.io ( http://www.notify.io/sources ) and approve the hd-logs to send notifications, it will be on the right sidebar.<br/>
+  </div>
+  <div>
+    <b>How can I get notifications on other operating systems?</b><br/>
+    There are alpha versions for Windows, Linux and Unix, and Notify.io is a open source project made by one of our directors(Jeff), you can check the google group (http://groups.google.com/group/notify-io) and search for support on your platform.<br/>
+  </div>
+</div>
+{% endblock %}

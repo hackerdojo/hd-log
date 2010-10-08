@@ -161,6 +161,15 @@ class ApiHandler(webapp.RequestHandler):
         else:
             self.response.out.write("Invalid Key")
 
+class FaqHandler(webapp.RequestHandler):
+    def get(self):
+        user = users.get_current_user()
+        if user:
+            logout_url = users.create_logout_url('/')
+        else:
+            login_url = users.create_login_url('/')
+        self.response.out.write(template.render('templates/faq.html', locals()))
+
 class MainHandler(webapp.RequestHandler):
     def get(self):
         user = users.get_current_user()
@@ -218,6 +227,7 @@ class NotifyIoEnableNotificationHandler(webapp.RequestHandler):
 def main():
     application = webapp.WSGIApplication([
         ('/', MainHandler),
+        ('/faq', FaqHandler),
         ('/updates/(.+)', UpdatesHandler),
         ('/comment/(.+)', CommentHandler),
         ('/api', ApiHandler),

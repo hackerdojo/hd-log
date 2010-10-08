@@ -50,3 +50,5 @@ h4 { font-size: smaller; }
 .comment-meta {color:#999999; display:block; font-size:11px;}
 #notificationPanel{background:none repeat scroll 0 0 #EEEEEE;border-color:#D50025;border-style:solid;border-width:0 0 2px;height:50px;position:absolute;right:0;top:25px;width:290px;}
 #load-more{background-color:#FFFFFF;border-color:#DDDDDD #AAAAAA #AAAAAA #DDDDDD;border-style:solid;border-width:1px;display:block;font-size:14px;font-weight:bold;height:22px;line-height:1.5em;margin-bottom:6px;outline:medium none;padding:6px 0;text-align:center;text-shadow:1px 1px 1px #FFFFFF;width:100%;}
+#faq { font-family: sans-serif; margin: 0px;}
+#faq div {margin-top:20px;}
